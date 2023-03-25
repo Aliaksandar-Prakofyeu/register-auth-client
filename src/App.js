@@ -4,7 +4,6 @@ import {Container, Spinner} from 'react-bootstrap'
 import {useContext, useEffect, useState} from 'react'
 import {Context} from './index'
 import {observer} from 'mobx-react-lite'
-import data from 'bootstrap/js/src/dom/data'
 import {check} from './api/userAPI'
 
 
@@ -13,14 +12,16 @@ const App = observer(() => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        check().then(data => {
+        check().then(() => {
             user.setUser(true)
             user.setIsAuth(true)
         }).finally(()=> setLoading(false))
-    }, [])
+    }, )
 
     if (loading) {
-        return <Spinner animation={'grow'}/>
+        return <Container className='d-flex align-items-center justify-content-center'>
+            <Spinner animation="border" variant="secondary" />
+        </Container>
     }
 
     return (

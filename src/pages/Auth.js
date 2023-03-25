@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react'
 import {Button, Container, Form, Nav} from 'react-bootstrap'
 import {LOGIN_ROUTE, PANEL_ROUTE, REGISTRATION_ROUTE} from '../utils/consts'
-import {redirect, useLocation, useNavigate} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import {login, registration} from '../api/userAPI'
 import {observer} from 'mobx-react-lite'
 import {Context} from '../index'

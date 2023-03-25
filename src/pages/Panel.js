@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {Button, ButtonGroup, Container, Form, Table} from 'react-bootstrap'
 import {Context} from '../index'
+import * as Icon from 'react-bootstrap-icons'
+import {LockFill, UnlockFill} from 'react-bootstrap-icons'
 import {deleteUser, getUsers, updateStatus} from '../api/panelAPI'
 import {observer} from 'mobx-react-lite'
 import {useHandle} from '../utils/useHandle'
@@ -22,38 +24,49 @@ const Panel = observer(() => {
 
     const handleCheck = (value) => {
         const updatedUsers = users.users.map(u => u.id === value ?
-            {...u, checked: u.checked !== undefined ? !u.checked : false} : u)
+            {...u, checked: !u.checked} : u)
         users.setUsers(updatedUsers)
     }
 
     const handleCheckAll = () => {
-        checkAll ? setCheckAll(false) : setCheckAll(true)
-        const updatedUsers = users.users.map(u => u.id && {...u, checked: !u.checked})
+        setCheckAll(prevCheckAll => !prevCheckAll)
+        const updatedUsers = users.users.map(u => u.id && {...u, checked: !checkAll})
         users.setUsers(updatedUsers)
     }
 
 
-    const changeStatus = async (status) => {
+    const block = async () => {
         const checkedUsers = users.users.filter(u => u.checked)
-        const blockedIds = []
         for (const u of checkedUsers) {
             try {
-                await updateStatus(u.id, `${status}`)
-                setCheckAll(false)
-                blockedIds.push(u.id)
+                await updateStatus(u.id, `blocked`)
+                if (u.id === authUserId.id) {
+                    user.setUser({})
+                    user.setIsAuth(false)
+                    localStorage.removeItem('token')
+                }
+
             } catch (e) {
                 console.log(e)
             }
         }
+        setCheckAll(false)
         handleData()
     }
 
-    const blockUser = () => {
-        changeStatus('block')
-    }
 
-    const unBlockUser = () => {
-        changeStatus('active')
+    const unBlock = async () => {
+        const checkedUsers = users.users.filter(u => u.checked)
+        for (const u of checkedUsers) {
+            try {
+                await updateStatus(u.id, `active`)
+
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        setCheckAll(false)
+        handleData()
     }
 
 
@@ -83,11 +96,11 @@ const Panel = observer(() => {
 
 
     return (
-        <Container>
-            <ButtonGroup className="m-2">
-                <Button variant="warning" onClick={blockUser}>Block</Button>
-                <Button variant="success" onClick={unBlockUser}>Unblock</Button>
-                <Button variant="danger" onClick={removeUser}>Delete</Button>
+        <Container className="border-1">
+            <ButtonGroup className="mt-3 mb-1">
+                <Button variant="secondary" onClick={block}><LockFill/></Button>
+                <Button variant="primary" onClick={unBlock}><UnlockFill/></Button>
+                <Button variant="danger" onClick={removeUser}><Icon.Trash3Fill/></Button>
             </ButtonGroup>
             <Table responsive bordered hover>
                 <thead>
@@ -98,7 +111,7 @@ const Panel = observer(() => {
                                 <Form.Check
                                     type={'checkbox'}
                                     id={`select all`}
-                                    label={`Select all`}
+                                    label={`All`}
                                     checked={checkAll}
                                     onClick={handleCheckAll}
                                 />
@@ -115,14 +128,13 @@ const Panel = observer(() => {
                 </thead>
                 <tbody>
                 {users.users.map(u => {
-                        return <tr>
+                        return <tr key={u.id}>
                             <td><Form>
                                 <div className="m-1">
                                     <Form.Check
                                         checked={u.checked || false}
                                         type={'checkbox'}
                                         id={u.id}
-                                        label={'select'}
                                         value={u.id}
                                         onChange={() => handleCheck(u.id)}
                                     />

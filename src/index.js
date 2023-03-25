@@ -1,24 +1,24 @@
 import React, {createContext} from 'react'
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import ReactDOM from 'react-dom/client'
+import App from './App'
 import {BrowserRouter} from 'react-router-dom'
 import UserStore from './api/store'
 import PanelStore from './api/PanelStore'
 
 export const Context = createContext(null)
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
-  <React.StrictMode>
-      <BrowserRouter>
-          <Context.Provider value={{
-              user: new UserStore(),
-              users: new PanelStore()
-          }}>
-              <App />
-          </Context.Provider>
-      </BrowserRouter>
-  </React.StrictMode>
-);
+    <React.StrictMode>
+        <BrowserRouter>
+            <Context.Provider value={{
+                user: new UserStore(),
+                users: new PanelStore()
+            }}>
+                <App/>
+            </Context.Provider>
+        </BrowserRouter>
+    </React.StrictMode>
+)
 
 
