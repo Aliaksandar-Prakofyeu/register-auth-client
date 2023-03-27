@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react'
-import {Button, Container, Form, Nav} from 'react-bootstrap'
+import {Alert, Button, Container, Form, Nav} from 'react-bootstrap'
 import {LOGIN_ROUTE, PANEL_ROUTE, REGISTRATION_ROUTE} from '../utils/consts'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {login, registration} from '../api/userAPI'
@@ -14,6 +14,7 @@ const Auth = observer(() => {
     const [email, setEmail] = useState('')
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState()
 
     const click = async () => {
         try{
@@ -25,10 +26,11 @@ const Auth = observer(() => {
             }
             user.setUser(user)
             user.setIsAuth(true)
-            console.log(user.isAuth)
             navigate(PANEL_ROUTE)
         } catch (e) {
-            alert(e.response.data.message)
+            e.response.data.errors ?
+                setError(e.response.data.errors.errors[0].msg) :
+                setError(e.response.data.message)
         }
 
     }
@@ -37,6 +39,7 @@ const Auth = observer(() => {
     return (
         <Container className="d-flex justify-content-center align-items-center mt-4">
             <Form>
+                {error && <Alert variant='danger'>{error}</Alert>}
                 {!isLogin && <Form.Group className="mb-3" controlId="formBasicName">
                     <Form.Label>Username</Form.Label>
                     <Form.Control value={name} onChange={e => setName(e.target.value)} required placeholder="Enter name"/>

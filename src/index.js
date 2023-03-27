@@ -2,7 +2,7 @@ import React, {createContext} from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import {BrowserRouter} from 'react-router-dom'
-import UserStore from './api/store'
+import UserStore from './api/userStore'
 import PanelStore from './api/PanelStore'
 
 export const Context = createContext(null)

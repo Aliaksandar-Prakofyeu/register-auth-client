@@ -3,6 +3,7 @@ import {Button, Container, Nav, Navbar} from 'react-bootstrap'
 import {LOGIN_ROUTE} from '../utils/consts'
 import {Context} from '../index'
 import {observer} from 'mobx-react-lite'
+import {Table} from 'react-bootstrap-icons'
 
 
 const NavBar = observer(() => {
@@ -17,7 +18,7 @@ const NavBar = observer(() => {
     return (
         <Navbar bg="light">
             <Container>
-                <Navbar.Brand href="#home">Web APP</Navbar.Brand>
+                <Navbar.Brand className='mr-3' href="/login"><Table/></Navbar.Brand>
                 <Navbar.Toggle/>
                 <Navbar.Collapse className="justify-content-end">
                     <Nav>
